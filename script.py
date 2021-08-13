@@ -1,23 +1,84 @@
+'''
+	Author : Vipray Jain
+
+	Description:
+	- It takes video as input and extract different sildes(Images) from the video.
+	- It Use structural_similarity to check similarity between two frames.
+	- Two varaibles can be varied as per your specific case:
+		- var "threshold" can be 
+			- decreased if getting False Positives.
+			- increased if missing True Positives.
+		- var "skipBy" can be
+			- decreased if missing True Positives.
+			- increased if getting False Positives.
+
+'''
+
+
+# imports
 import cv2
 from skimage.metrics import structural_similarity as ssim
 
-vidcap = cv2.VideoCapture('OS.mp4')
+#taking video name as a CLI argument.
+videoName = argv[2]
+
+# Start Capturing Video
+vidcap = cv2.VideoCapture(videoName)
+
+# Read a frame from the video
 success,image = vidcap.read()
-imageOld = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+# Counter For skipping Frames and Naming the saved Image
 count = 0
-#cv2.imwrite("frame%d.jpg" % count, image)
 
+# Threshold for considering two images different
+threshold = 0.98
+
+# To skip frames
+skipBy = 30
+
+# To hold last Gray Image
+oldGrayImage = None
+
+# "success" is true if vidcap.read() captured an Image
+if(success):
+	# Write Image into the folder
+	cv2.imwrite("frame%d.jpg" % count, image)
+	
+	# Convert colored image into Gray image
+	oldGrayImage = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+
+# Check frames till the end of the video
 while success:
-  #cv2.imwrite("frame%d.jpg" % count, image)     # save frame as JPEG file      
-  #cv2.imshow("frame",image)
-  success,image = vidcap.read()
-  if(success):
-	  imageO = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-	  simlarityIndex = ssim(imageO, imageOld)
-	  imageOld = imageO
-	  count += 30
-	  vidcap.set(cv2.CAP_PROP_POS_FRAMES, count)	  
-	  if(simlarityIndex<0.98):
-	  	cv2.imwrite("frame%d.jpg" % count, image)
-	  print('Read a new frame: ', success," ",simlarityIndex)
 
+  # Read a frame from the video
+  success,image = vidcap.read()
+
+  # "success" is true if vidcap.read() captured an Image
+  if(success):
+	  # Convert colored image into Gray image
+	  currentGrayImage = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+	  # Check similarity between the last frame captured (oldGrayImage) and current frame (oldGrayImage)
+	  simlarityIndex = ssim(currentGrayImage, oldGrayImage)
+	  
+	  # If Similarity is less than threshold, consider the two frame as differnet
+	  if(simlarityIndex < threshold):
+		
+		# Write Image into the folder
+	  	cv2.imwrite("frame%d.jpg" % count, image)
+	  
+	  # Just To See 
+	  print('Read a new frame: ', success," ",simlarityIndex)
+	  
+	  # Store current Gray Image as old Gray Image
+	  oldGrayImage = currentGrayImage
+
+	  # Increase Counter to skip some frames
+	  count += skipBy
+
+	  # Skip skipBy frames
+	  # Checking all the frames doesn't help much, it just increase the Time Complexity.
+	  vidcap.set(cv2.CAP_PROP_POS_FRAMES, count)	  
+	  
