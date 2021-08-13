@@ -1,4 +1,4 @@
-#### Description
+## Description
 - It takes video as input and extract different sildes(Images) from the video.
 - It Use structural_similarity to check similarity between two frames.
 - Two varaibles can be varied as per your specific case:

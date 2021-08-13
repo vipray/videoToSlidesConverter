@@ -17,10 +17,11 @@
 
 # imports
 import cv2
+import sys
 from skimage.metrics import structural_similarity as ssim
 
 #taking video name as a CLI argument.
-videoName = argv[2]
+videoName = sys.argv[1]
 
 # Start Capturing Video
 vidcap = cv2.VideoCapture(videoName)
