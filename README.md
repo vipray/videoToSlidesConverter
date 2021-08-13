@@ -12,9 +12,9 @@
 
 ## Steps
 - Install required libraries using
-    - pip install -r requirements.txt
+    - * pip install -r requirements.txt
     - If something else is missing, please download it as well using help of stackoverflow ;)
 - Script Run Command
-    - python script.py Sample.mp4
+    - * python script.py Sample.mp4
     - replace "Sample.mp4" with <your file's name>
     - it will create a PDF named <your file's name>.pdf
